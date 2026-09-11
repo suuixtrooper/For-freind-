@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aaaahhhh!</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    /* അതിവേഗത്തിൽ കണ്ണിലേക്ക് കുത്തുന്ന അൾട്രാ സ്ട്രോബ് ഫ്ലാഷ് (White + RGB) */
+    @keyframes seizureStrobe {
+      0%   { background-color: #ffffff; }
+      12%  { background-color: #ff0000; }
+      25%  { background-color: #ffffff; }
+      37%  { background-color: #00ff00; }
+      50%  { background-color: #ffffff; }
+      62%  { background-color: #0000ff; }
+      75%  { background-color: #ffff00; }
+      87%  { background-color: #ffffff; }
+      100% { background-color: #ff00ff; }
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      /* 0.04 സെക്കൻഡ് - കണ്ണ് ചിമ്മുന്നതിനേക്കാൾ വേഗതയിൽ ഫ്ലാഷ് അടിക്കും */
+      animation: seizureStrobe 0.04s infinite;
+      overflow: hidden;
+      position: relative;
+      cursor: pointer;
+    }
+
+    /* നടുവിൽ ഭ്രാന്തമായി കുലുങ്ങി വിറയ്ക്കുന്ന വലിയ Aaaahhhh */
+    .shout-text {
+      font-size: clamp(65px, 20vw, 180px);
+      font-weight: 900;
+      color: #ffffff;
+      text-transform: uppercase;
+      letter-spacing: 6px;
+      text-shadow: 
+        0 0 20px #ff0000,
+        0 0 40px #00ffff,
+        0 0 70px #ffffff,
+        0 0 100px #ff00ff;
+      animation: crazyVibrate 0.06s infinite alternate;
+      text-align: center;
+      user-select: none;
+      line-height: 1;
+    }
+
+    @keyframes crazyVibrate {
+      0%   { transform: translate(8px, -8px) scale(1.1) rotate(-3deg); }
+      50%  { transform: translate(-8px, 8px) scale(0.9) rotate(3deg); }
+      100% { transform: translate(-6px, -6px) scale(1.15) rotate(0deg); }
+    }
+
+    .footer {
+      position: absolute;
+      bottom: 25px;
+      font-size: 14px;
+      font-weight: 900;
+      color: #000;
+      background: #ffffff;
+      padding: 8px 20px;
+      border-radius: 30px;
+      letter-spacing: 1.5px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.8);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="shout-text">Aaaahhhh!</div>
+
+  <!-- ബാക്ക്ഗ്രൗണ്ടിൽ ഓടുന്ന ഓഡിയോ -->
+  <audio id="prankAudio" loop playsinline>
+    <source src="custom_prank.mp3" type="audio/mpeg">
+  </audio>
+
+  <div class="footer">created by state_.trooper</div>
+
+  <script>
+    const audio = document.getElementById('prankAudio');
+
+    function triggerAudio() {
+      audio.volume = 1.0;
+      audio.play().catch(() => {});
+    }
+
+    // പേജ് കയറുമ്പോൾ തന്നെ സൗണ്ട് ഓൺ ആക്കാൻ ശ്രമിക്കും
+    window.addEventListener('DOMContentLoaded', () => {
+      triggerAudio();
+    });
+
+    // മൊബൈൽ ബ്രൗസറുകളിൽ തനിയെ ശബ്ദം വരുന്നത് തടഞ്ഞാലും സ്‌ക്രീനിൽ എവിടെ തൊട്ടാലും ഫുൾ വോളിയത്തിൽ അടിക്കും
+    document.addEventListener('touchstart', triggerAudio, { once: true });
+    document.addEventListener('click', triggerAudio, { once: true });
+  </script>
+
+</body>
+</html>

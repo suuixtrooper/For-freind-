@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="ml">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Friendship Score Check</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Poppins', sans-serif, Arial;
+    }
+
+    /* ആദ്യത്തെ പേജിന്റെ സ്റ്റൈൽ */
+    body {
+      background: linear-gradient(135deg, #0b0c10, #1f2833, #0b0c10);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      color: #fff;
+      overflow: hidden;
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(15px);
+      -webkit-backdrop-filter: blur(15px);
+      padding: 40px 25px;
+      border-radius: 24px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8);
+      text-align: center;
+      max-width: 380px;
+      width: 90%;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      transition: 0.3s;
+    }
+
+    h1 {
+      font-size: 24px;
+      margin-bottom: 25px;
+      color: #ff3366;
+      text-shadow: 0 0 15px rgba(255, 51, 102, 0.6);
+      font-weight: 700;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 15px;
+      border-radius: 12px;
+      border: 2px solid transparent;
+      outline: none;
+      font-size: 16px;
+      margin-bottom: 20px;
+      background: rgba(255, 255, 255, 0.95);
+      color: #111;
+      text-align: center;
+      font-weight: bold;
+      transition: 0.3s;
+    }
+
+    input[type="text"]:focus {
+      border-color: #ff3366;
+      box-shadow: 0 0 15px rgba(255, 51, 102, 0.5);
+    }
+
+    button {
+      width: 100%;
+      padding: 15px;
+      background: linear-gradient(45deg, #ff3366, #ff0055);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 17px;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: 0 6px 20px rgba(255, 51, 102, 0.4);
+      transition: 0.2s;
+    }
+
+    button:active {
+      transform: scale(0.97);
+    }
+
+    /* ------------------------------------------- */
+    /* പ്രാങ്ക് സ്റ്റാർട്ട് ആകുമ്പോഴുള്ള ക്ലാസ്സുകൾ */
+    /* ------------------------------------------- */
+
+    /* കണ്ണ് ചിമ്മുന്ന അതിവേഗ അൾട്രാ RGB + White സ്ട്രോബ് ഫ്ലാഷ് */
+    @keyframes seizureStrobe {
+      0%   { background-color: #ffffff; }
+      12%  { background-color: #ff0000; }
+      25%  { background-color: #ffffff; }
+      37%  { background-color: #00ff00; }
+      50%  { background-color: #ffffff; }
+      62%  { background-color: #0000ff; }
+      75%  { background-color: #ffff00; }
+      87%  { background-color: #ffffff; }
+      100% { background-color: #ff00ff; }
+    }
+
+    body.prank-active {
+      animation: seizureStrobe 0.04s infinite !important;
+      cursor: pointer;
+    }
+
+    /* പ്രാങ്ക് സ്ക്രീൻ കണ്ടെയ്നർ */
+    #prankScreen {
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      height: 100vh;
+      position: absolute;
+      top: 0;
+      left: 0;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    /* വിറയ്ക്കുന്ന ഭീമൻ ടെക്സ്റ്റ് */
+    .shout-text {
+      font-size: clamp(65px, 20vw, 180px);
+      font-weight: 900;
+      color: #ffffff;
+      text-transform: uppercase;
+      letter-spacing: 6px;
+      text-shadow: 
+        0 0 20px #ff0000,
+        0 0 40px #00ffff,
+        0 0 70px #ffffff,
+        0 0 100px #ff00ff;
+      animation: crazyVibrate 0.06s infinite alternate;
+      text-align: center;
+      line-height: 1;
+    }
+
+    @keyframes crazyVibrate {
+      0%   { transform: translate(8px, -8px) scale(1.1) rotate(-3deg); }
+      50%  { transform: translate(-8px, 8px) scale(0.9) rotate(3deg); }
+      100% { transform: translate(-6px, -6px) scale(1.15) rotate(0deg); }
+    }
+
+    /* Aaaahhhh-ന് താഴെയുള്ള ക്രെഡിറ്റ് ബാഡ്ജ് */
+    .credit-badge {
+      margin-top: 35px;
+      font-size: 15px;
+      font-weight: 900;
+      color: #000;
+      background: #ffffff;
+      padding: 10px 24px;
+      border-radius: 30px;
+      letter-spacing: 1.5px;
+      box-shadow: 0 0 25px rgba(0, 0, 0, 0.9);
+      text-transform: lowercase;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ആദ്യത്തെ കാൽക്കുലേറ്റർ കാർഡ് -->
+  <div class="card" id="formCard">
+    <h1>Friendship Score Check</h1>
+    <form onsubmit="startPrank(event)">
+      <input type="text" id="friendName" placeholder="നിങ്ങളുടെ ഫ്രണ്ടിന്റെ പേര് നൽകൂ..." required autocomplete="off">
+      <button type="submit" id="calcBtn">Calculate Score</button>
+    </form>
+  </div>
+
+  <!-- പ്രാങ്ക് ആകുമ്പോൾ കാണിക്കുന്ന സ്ക്രീൻ -->
+  <div id="prankScreen">
+    <div class="shout-text">Aaaahhhh!</div>
+    <div class="credit-badge">created by state_.trooper</div>
+  </div>
+
+  <!-- ബാക്ക്ഗ്രൗണ്ട് ഓഡിയോ -->
+  <audio id="prankAudio" loop preload="auto" playsinline>
+    <source src="custom_prank.mp3" type="audio/mpeg">
+    <source src="custom_prank.mp3" type="audio/mp3">
+  </audio>
+
+  <script>
+    const audio = document.getElementById('prankAudio');
+    const formCard = document.getElementById('formCard');
+    const prankScreen = document.getElementById('prankScreen');
+
+    function startPrank(e) {
+      if (e) e.preventDefault();
+
+      // 1. ഉടൻ തന്നെ ഫുൾ വോളിയത്തിൽ ഓഡിയോ പ്ലേ ചെയ്യുന്നു
+      audio.volume = 1.0;
+      audio.play().catch(() => {});
+
+      // 2. പഴയ ഫോം മറച്ച് പ്രാങ്ക് സ്ക്രീൻ ഓണാക്കുന്നു
+      formCard.style.display = 'none';
+      prankScreen.style.display = 'flex';
+      document.body.classList.add('prank-active');
+
+      // 3. ബാക്ക് ബട്ടൺ അടിച്ചാൽ പോകാതിരിക്കാൻ ഹിസ്റ്ററി ട്രാപ്പ്
+      history.pushState(null, document.title, location.href);
+    }
+
+    // ബാക്ക് ബട്ടൺ അടിച്ചാലും ഇതേ പ്രാങ്ക് പേജിൽ തന്നെ നിർത്തുന്നു
+    window.addEventListener('popstate', function () {
+      history.pushState(null, document.title, location.href);
+      audio.play().catch(() => {});
+    });
+  </script>
+
+</body>
+</html>
